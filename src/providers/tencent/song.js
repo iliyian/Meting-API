@@ -60,7 +60,7 @@ export const get_song_url = async (id, cookie = '') => {
         const parse_function = "qq_get_url_from_json"
         const url = changeUrlQuery(params, 'https://u.y.qq.com/cgi-bin/musicu.fcg')
         // return "@" + parse_function + '@' + callback_name + '@' + callback_function_name + '@' + url
-        url.replace("https://u.y.qq.com/cgi-bin/musicu.fcg?-=", "https://u.y.qq.com/cgi-bin/musicu.fcg?")
+        url.replaceAll("https://u.y.qq.com/cgi-bin/musicu.fcg?-=", "https://u.y.qq.com/cgi-bin/musicu.fcg?")
         return url
     }
 
