@@ -27,7 +27,7 @@ function changeUrlQuery(obj, baseUrl) {
     const newQuery = { ...query, ...obj };
     let queryArr = [];
     Object.keys(newQuery).forEach((key) => {
-        if (newQuery[key] !== undefined && newQuery[key] !== '') {
+        if (newQuery[key] !== undefined && newQuery[key] !== '' && newQuery[key] != '-') {
             queryArr.push(`${key}=${encodeURIComponent(newQuery[key])}`);
         }
     });
