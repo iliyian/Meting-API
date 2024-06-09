@@ -59,7 +59,8 @@ export const get_song_url = async (id, cookie = '') => {
         const callback_name = "callback"
         const parse_function = "qq_get_url_from_json"
         const url = changeUrlQuery(params, 'https://u.y.qq.com/cgi-bin/musicu.fcg')
-        return "@" + parse_function + '@' + callback_name + '@' + callback_function_name + '@' + url
+        // return "@" + parse_function + '@' + callback_name + '@' + callback_function_name + '@' + url
+        return url
     }
 
 
