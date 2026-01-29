@@ -1,12 +1,69 @@
 import { changeUrlQuery } from "./util.js"
 import config from "../../config.js"
 
+// 从环境变量获取 QQ 音乐的登录凭证，用于获取 VIP 歌曲
+const getQQCredentials = () => {
+    let uin = globalThis?.Deno?.env?.get("QQ_UIN") || globalThis?.process?.env?.QQ_UIN || ''
+    let qqmusic_key = globalThis?.Deno?.env?.get("QQ_MUSIC_KEY") || globalThis?.process?.env?.QQ_MUSIC_KEY || ''
+    return { uin, qqmusic_key }
+}
+
+// 批量获取歌曲的真实音频 URL（后端直接请求，不使用 JSONP）
+export const get_song_url_direct = async (ids, cookie = '') => {
+    const { uin, qqmusic_key } = getQQCredentials()
+    const guid = (Math.random() * 10000000).toFixed(0);
+
+    let data = {
+        req_0: {
+            module: 'vkey.GetVkeyServer',
+            method: 'CgiGetVkey',
+            param: {
+                guid: guid,
+                songmid: ids,
+                songtype: [0],
+                uin: uin,
+                loginflag: 1,
+                platform: '20',
+            },
+        },
+        comm: {
+            uin: uin,
+            format: 'json',
+            ct: 19,
+            cv: 0,
+            authst: qqmusic_key,
+        },
+    }
+
+    let params = {
+        '-': 'getplaysongvkey',
+        g_tk: 5381,
+        loginUin: uin,
+        hostUin: 0,
+        format: 'json',
+        inCharset: 'utf8',
+        outCharset: 'utf-8¬ice=0',
+        platform: 'yqq.json',
+        needNewCode: 0,
+        data: JSON.stringify(data),
+    }
+
+    const url = changeUrlQuery(params, 'https://u.y.qq.com/cgi-bin/musicu.fcg')
+    let result = await fetch(url);
+    result = await result.json()
+
+    const urls = []
+    const domain = result.req_0.data.sip.find(i => !i.startsWith('http://ws')) || result.req_0.data.sip[0];
+    for (const info of result.req_0.data.midurlinfo) {
+        urls.push(info.purl ? `${domain}${info.purl}`.replace('http://', 'https://') : '')
+    }
+    return urls
+}
+
 export const get_song_url = async (id, cookie = '') => {
 
     id = id.split(',')
-    // 从环境变量获取 QQ 音乐的登录凭证，用于获取 VIP 歌曲
-    let uin = globalThis?.Deno?.env?.get("QQ_UIN") || globalThis?.process?.env?.QQ_UIN || ''
-    let qqmusic_key = globalThis?.Deno?.env?.get("QQ_MUSIC_KEY") || globalThis?.process?.env?.QQ_MUSIC_KEY || ''
+    const { uin, qqmusic_key } = getQQCredentials()
     const typeObj = {
         s: 'M500',
         e: '.mp3',

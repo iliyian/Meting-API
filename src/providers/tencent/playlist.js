@@ -1,5 +1,5 @@
 import config from "../../config.js"
-import { get_song_url } from "./song.js"
+import { get_song_url, get_song_url_direct } from "./song.js"
 import { changeUrlQuery } from "./util.js"
 
 const get_playlist = async (id, cookie = '') => {
@@ -23,25 +23,22 @@ const get_playlist = async (id, cookie = '') => {
     result = await result.json()
     result = result.cdlist[0].songlist
 
-    let jsonp
-    if (config.OVERSEAS) {
-        const ids = result.map(song => song.songmid)
-        jsonp = await get_song_url(ids.join(','))
-    }
-    const res = await Promise.all(result.map(async song => {
+    // 无论是否 OVERSEAS，都由后端直接获取音频 URL
+    const ids = result.map(song => song.songmid)
+    const urls = await get_song_url_direct(ids)
+    
+    const res = result.map((song, index) => {
         let song_info = {
             author: song.singer.reduce((i, v) => ((i ? i + " / " : i) + v.name), ''),
             title: song.songname,
             pic: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${song.albummid}.jpg`,
-            url: config.OVERSEAS ? '' : song.songmid,
+            url: urls[index] || song.songmid,
             lrc: song.songmid,
             songmid: song.songmid,
         }
         return song_info
-    }));
+    });
 
-    // 在 OVERSEAS 模式下，添加 @qq_get_url_from_json 前缀，让前端 MetingJS 知道需要用 JSONP 处理
-    if (config.OVERSEAS) res[0].url = '@qq_get_url_from_json@' + jsonp
     return res;
 }
 
