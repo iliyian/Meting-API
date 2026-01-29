@@ -8,7 +8,17 @@ import { get_runtime, get_url } from './src/util.js'
 
 const app = new Hono()
 
-app.use('*', cors())
+app.use('*', cors({
+    origin: (origin) => {
+        const allowed = [
+            'https://iliyian.com',
+            'http://localhost:4000',
+        ]
+        return allowed.includes(origin) ? origin : null
+    },
+    allowMethods: ['GET', 'OPTIONS'],
+    maxAge: 86400,
+}))
 app.use('*', logger())
 app.get('/api', api)
 app.get('/test', handler)
