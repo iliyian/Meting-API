@@ -111,16 +111,7 @@ export const get_song_url = async (id, cookie = '') => {
     }
 
 
-    if (config.OVERSEAS || id.length > 1) {
-        params.format = 'jsonp'
-        const callback_function_name = 'callback'
-        const callback_name = "callback"
-        const parse_function = "qq_get_url_from_json"
-        let url = changeUrlQuery(params, 'https://u.y.qq.com/cgi-bin/musicu.fcg')
-        // return "@" + parse_function + '@' + callback_name + '@' + callback_function_name + '@' + url
-        url.replaceAll("https://u.y.qq.com/cgi-bin/musicu.fcg?-=", "https://u.y.qq.com/cgi-bin/musicu.fcg?")
-        return url
-    }
+    // 移除 OVERSEAS 的 JSONP 逻辑，始终由后端直接请求
 
 
     const url = changeUrlQuery(params, 'https://u.y.qq.com/cgi-bin/musicu.fcg')
