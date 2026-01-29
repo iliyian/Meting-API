@@ -4,8 +4,9 @@ import config from "../../config.js"
 export const get_song_url = async (id, cookie = '') => {
 
     id = id.split(',')
-    let uin = ''
-    let qqmusic_key = ''
+    // 从环境变量获取 QQ 音乐的登录凭证，用于获取 VIP 歌曲
+    let uin = globalThis?.Deno?.env?.get("QQ_UIN") || globalThis?.process?.env?.QQ_UIN || ''
+    let qqmusic_key = globalThis?.Deno?.env?.get("QQ_MUSIC_KEY") || globalThis?.process?.env?.QQ_MUSIC_KEY || ''
     const typeObj = {
         s: 'M500',
         e: '.mp3',
