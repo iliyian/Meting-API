@@ -40,7 +40,8 @@ const get_playlist = async (id, cookie = '') => {
         return song_info
     }));
 
-    if (config.OVERSEAS) res[0].url = jsonp
+    // 在 OVERSEAS 模式下，添加 @qq_get_url_from_json 前缀，让前端 MetingJS 知道需要用 JSONP 处理
+    if (config.OVERSEAS) res[0].url = '@qq_get_url_from_json@' + jsonp
     return res;
 }
 
