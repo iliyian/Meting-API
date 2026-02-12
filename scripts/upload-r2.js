@@ -89,7 +89,9 @@ async function main() {
         const results = await Promise.allSettled(batch.map(async (file) => {
             const filePath = path.join(SNAPSHOT_DIR, file);
             const key = file.replace(/\\/g, '/');
-            const contentType = mime.lookup(filePath) || 'application/octet-stream';
+            const contentType = file.endsWith('.lrc')
+                ? 'text/plain; charset=utf-8'
+                : (mime.lookup(filePath) || 'application/octet-stream');
             const body = fs.readFileSync(filePath);
 
             await client.send(new PutObjectCommand({
