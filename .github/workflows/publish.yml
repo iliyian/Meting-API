@@ -67,7 +67,7 @@ jobs:
         run: docker save meting-api:latest | gzip -1cf > meting.tar.gz
 
       - name: Upload Docker image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: meting.tar.gz
           path: meting.tar.gz
@@ -86,34 +86,34 @@ jobs:
       - run: npm i
       - run: npm run build:all
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: cloudflare-workers.js
           path: dist/cloudflare-workers.js
           retention-days: 1
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: deno.js
           path: dist/deno.js
           retention-days: 1
 
-  deploy-to-deno:
-    needs: [upload-art]
-    if: ${{ inputs.deno ||  github.event_name == 'push' }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
+  # deploy-to-deno:
+  #   needs: [upload-art]
+  #   if: ${{ inputs.deno ||  github.event_name == 'push' }}
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     id-token: write
+  #     contents: read
 
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: deno.js
-      - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
-        with:
-          project: meting
-          entrypoint: deno.js
+  #   steps:
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: deno.js
+  #     - name: Upload to Deno Deploy
+  #       uses: denoland/deployctl@v1
+  #       with:
+  #         project: meting
+  #         entrypoint: deno.js
 
   release-docker:
     needs: [test-docker]
