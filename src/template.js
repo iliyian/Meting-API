@@ -16,6 +16,12 @@ let html = `
         var meting_api = 'api?server=:server&type=:type&id=:id&auth=:auth&r=:r';
     </script>
     <script src="https://unpkg.com/@xizeyoupan/meting@latest/dist/Meting.min.js"></script>
+
+    <div>
+        <p>tencent song (VIP歌曲测试)</p>
+        <meting-js server="tencent" type="song" id="004BhQke4adHcf" list-folded=true />
+    </div>
+    <br/>
 `
 
 Object.keys(example).map(provider => {
