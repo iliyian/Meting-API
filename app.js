@@ -13,6 +13,8 @@ app.use('*', cors({
         const allowed = [
             'https://iliyian.com',
             'http://localhost:4000',
+            'https://iliyian.github.io',
+            'https://*.iliyian.pages.dev'
         ]
         return allowed.includes(origin) ? origin : null
     },
