@@ -11,12 +11,7 @@ const app = new Hono()
 app.use('*', cors({
     origin: (origin) => {
         const allowed = [
-            'https://iliyian.com',
-            'http://localhost:4000',
-            'http://152.53.81.130:4000',
-            'https://iliyian.github.io',
-            'https://*.blogxyz.pages.dev',
-            'https://*.iliyian.pages.dev'
+            '*'
         ]
         return allowed.includes(origin) ? origin : null
     },
